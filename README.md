@@ -19,7 +19,7 @@ You can see a live version of the bot here:
 To get started with UltraWeb Bot, clone this repository to your local machine.
 
 ```bash
-git clone https://github.com/yourusername/UltraWeb-Bot.git
+git clone https://github.com/Ultrawebs/UltraWeb-Bot.git
 ```
 
 ### 2. Open the `index.html` file:
