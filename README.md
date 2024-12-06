@@ -1,4 +1,4 @@
-# UltraWeb Bot
+# ![UltraWebs Icon](bot.webp) UltraWebs Bot
 
 Welcome to the UltraWeb Bot project! This is a simple, responsive chatbot interface that lets users interact with different AI models. The bot supports various models like GPT-4o, Mistral Nemo, Llama 3.1, and more.
 
