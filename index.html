@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>UltraWeb Bot</title>
+  <link rel="icon" type="image/png" href="bot.webp" sizes="128x128"
+  style="border-radius: 5px;">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <div class="mobile-header">
+    <img src="https://i.imgur.com/PgTgdGK.png" alt="Logo" class="logo" />
+      <div class="mobile-header-title"></div>
+      <div class="model-selector">
+        <button class="model-toggle" id="modelToggle">
+          <span id="currentModelName">GPT-4o</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m6 9 6 6 6-6"/>
+          </svg>
+        </button>
+        <div class="model-dropdown" id="modelDropdown">
+          <!-- Model options will be dynamically populated here -->
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-container">
+      <div id="chatMessages" class="chat-messages"></div>
+      
+      <div id="loader" class="loading">
+        <div class="loading-dots">
+          <div class="loading-dot"></div>
+          <div class="loading-dot"></div>
+          <div class="loading-dot"></div>
+        </div>
+      </div>
+      
+      <div class="chat-input-container">
+        <div class="chat-input">
+          <input type="text" id="messageInput" placeholder="Type a message...">
+        </div>
+        <button id="sendButton">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const models = [
+      { "name": "openai", "type": "chat", "description": "GPT-4o" },
+      { "name": "mistral", "type": "chat", "description": "Mistral Nemo" },
+      { "name": "mistral-large", "type": "chat", "description": "Mistral Large" },
+      { "name": "llama", "type": "completion", "description": "Llama 3.1" },
+      { "name": "command-r", "type": "chat", "description": "Command-R" },
+      { "name": "unity", "type": "chat", "description": "Unity AI" },
+      { "name": "qwen-coder", "type": "chat", "description": "Qwen Coder" }
+    ];
+
+    const chatMessages = document.getElementById('chatMessages');
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
+    const loader = document.getElementById('loader');
+    const modelDropdown = document.getElementById('modelDropdown');
+    const modelToggle = document.getElementById('modelToggle');
+    const currentModelName = document.getElementById('currentModelName');
+
+    let currentModel = 'openai';
+
+    // Populate model dropdown
+    models.forEach(model => {
+      const modelOption = document.createElement('div');
+      modelOption.classList.add('model-option');
+      
+      const icon = document.createElement('div');
+      icon.classList.add('model-option-icon');
+      icon.textContent = model.name[0].toUpperCase();
+      
+      const text = document.createElement('span');
+      text.textContent = model.description;
+      
+      modelOption.appendChild(icon);
+      modelOption.appendChild(text);
+      
+      modelOption.addEventListener('click', () => {
+        currentModel = model.name;
+        currentModelName.textContent = model.description;
+        modelDropdown.classList.remove('active');
+      });
+
+      modelDropdown.appendChild(modelOption);
+    });
+
+    // Toggle model dropdown
+    modelToggle.addEventListener('click', (event) => {
+      event.stopPropagation(); // Prevent immediate closing
+      modelDropdown.classList.toggle('active');
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (event) => {
+      if (!modelToggle.contains(event.target) && !modelDropdown.contains(event.target)) {
+        modelDropdown.classList.remove('active');
+      }
+    });
+
+    // Prevent dropdown from closing when clicking inside
+    modelDropdown.addEventListener('click', (event) => {
+      event.stopPropagation();
+    });
+
+    function addMessage(content, isUser = false) {
+      const messageDiv = document.createElement('div');
+      messageDiv.classList.add('message');
+      messageDiv.classList.add(isUser ? 'user-message' : 'ai-message');
+      messageDiv.textContent = content;
+
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function generateResponse(prompt) {
+      loader.style.display = 'flex';
+      
+      const params = new URLSearchParams({
+        model: currentModel
+      });
+
+      fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}?${params.toString()}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Text generation failed');
+          }
+          return response.text();
+        })
+        .then(text => {
+          loader.style.display = 'none';
+          addMessage(text);
+        })
+        .catch(error => {
+          loader.style.display = 'none';
+          addMessage(`Error: ${error.message}`, false);
+        });
+    }
+
+    sendButton.addEventListener('click', () => {
+      const message = messageInput.value.trim();
+      if (message) {
+        addMessage(message, true);
+        generateResponse(message);
+        messageInput.value = '';
+      }
+    });
+
+    messageInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        sendButton.click();
+      }
+    });
+
+    addMessage("Hello! I'm your AI chat companion. How can I help you today?", false);
+
+    // Prevent zoom on input focus for mobile
+    messageInput.addEventListener('focus', () => {
+      document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+    });
+
+    messageInput.addEventListener('blur', () => {
+      document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width, initial-scale=1.0');
+    });
+  </script>
+</body>
+</html>
