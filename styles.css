@@ -1,0 +1,267 @@
+@import url('https://fonts.googleapis.com/css2?family=Onest:wght@100..900&display=swap');
+
+/* Root Variables for Colors and Fonts */
+:root {
+    --font-primary: 'Onest', sans-serif;
+    /* Set 'Onest' as the primary font */
+    --bg-primary: #f9f9f9; /* Light neutral background */
+    --bg-secondary: #ffffff; /* White background for cards */
+    --accent-primary: #4caf50; /* Soft green for headers and accents */
+    --accent-secondary: #388e3c; /* Deeper green for buttons */
+    --text-primary: #333333; /* Dark text color for readability */
+    --text-secondary: #666666; /* Lighter gray for secondary text */
+    --border-color: #e0e0e0; /* Soft gray for borders */
+}
+
+* {
+    font-family: var(--font-primary);
+    /* Apply the 'Onest' font globally */
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+    height: 100%;
+    width: 100%;
+    overscroll-behavior-y: contain;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background: url('https://i.imgur.com/XtHkJjs.png') center center / cover no-repeat;
+    color: var(--text-primary);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Main Container */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 95vh;
+    width: 90%;
+    max-width: 1200px;
+    margin: 2% auto;
+    background: rgba(0, 0, 0, 0.7);
+    /* Darker transparent background */
+    backdrop-filter: blur(8px);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+/* Header */
+.mobile-header {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.logo {
+    width: 120px;
+    height: auto;
+}
+
+.mobile-header-title {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+/* Dropdown Menu */
+.model-selector {
+    position: relative;
+}
+
+.model-toggle {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.model-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: var(--bg-secondary);
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    width: 200px;
+    max-height: 250px;
+    overflow-y: auto;
+    transition: opacity 0.3s;
+    opacity: 0;
+    z-index: 10;
+    display: none;
+}
+
+.model-dropdown.active {
+    opacity: 1;
+    display: block;
+}
+
+.model-option {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    color: var(--text-primary);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.model-option:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Chat Area */
+.chat-container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 20px;
+}
+
+.chat-messages {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    gap: 15px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-primary) var(--bg-secondary);
+}
+
+.chat-messages::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: var(--accent-primary);
+    border-radius: 4px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+.message {
+    max-width: 80%;
+    padding: 12px 15px;
+    border-radius: 12px;
+    font-size: 1rem;
+}
+
+.user-message {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    color: white;
+    align-self: flex-end;
+}
+
+.ai-message {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+/* Input Area */
+.chat-input-container {
+    display: flex;
+    justify-content: space-between; /* Ensures proper spacing between input and button */
+    align-items: center; /* Vertically centers the input and button */
+    padding: 10px;
+    border-top: 1px solid var(--border-color); /* Optional separator */
+}
+
+#messageInput {
+    flex-grow: 1;
+    /* Allows the input to expand within its container */
+    width: 100%;
+    /* Ensures it takes up all available space */
+    max-width: calc(100% - 50px);
+    /* Optional: Adds padding/margin constraints */
+    padding: 12px 15px;
+    /* Adjusted for a consistent input size */
+    border: none;
+    border-radius: 25px;
+    /* Full-rounded corners */
+    font-size: 1rem;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+    /* Adds subtle depth */
+    resize: none;
+    /* Prevents resizing by users */
+    font-weight: bold;
+}
+
+.chat-input {
+    display: flex;
+    /* Allows the input and button to align side-by-side */
+    width: 100%;
+    /* Ensures the chat input container stretches across the screen */
+    gap: 10px;
+    /* Adds spacing between input and send button */
+}
+
+#messageInput::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+
+#sendButton {
+    width: 50px;
+    /* Adjusted to match the height of the input field */
+    height: 45px;
+    border-radius: 50%;
+    /* Perfect circle */
+    border: none;
+    background: var(--accent-primary);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.3s, background-color 0.3s;
+}
+
+#sendButton:hover {
+    background: var(--accent-secondary);
+    /* Hover effect */
+    transform: scale(1.1);
+    /* Slight zoom on hover */
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .app-container {
+        height: 100vh;
+        width: 95%;
+    }
+
+    .message {
+        max-width: 90%;
+    }
+}
+
+@media (min-width: 769px) {
+    .app-container {
+        max-width: 800px;
+    }
+
+    .message {
+        max-width: 75%;
+    }
+}
